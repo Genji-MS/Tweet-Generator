@@ -5,22 +5,21 @@ from weighted_random import random_word_from_lists, wordcount_nestedlist, init
 from word_frequency import parseFile
 
 
-app = Flask(__name__)    
-randomgram = None
+app = Flask(__name__)
+randomgram = init()
 
 @app.route('/')
 def index():
     """Return homepage"""
-    global randomgram
-
-    if randomgram == None:
-        print ('running init')
-        randomgram = init()
+    #note to self, instead of global, run the function as above
+    #global randomgram
+    #if randomgram == None:
+    #    print ('running init')
+    #    randomgram = init()
 
     wordlist = []
     words = request.args.get('num')
-    num_words = 1 
-    if words != None and int(words)>1 :num_words = int(words)
+    num_words = 1 if (words != None and int(words)>1) else int(words)
 
     for x in range(num_words):
         rng_word = random_word_from_lists(randomgram)
