@@ -2,7 +2,6 @@
 
 from __future__ import division, print_function  # Python 2 and 3 compatibility
 
-
 class Dictogram(dict):
     """Dictogram is a histogram implemented as a subclass of the dict type."""
 
@@ -17,26 +16,39 @@ class Dictogram(dict):
             for word in word_list:
                 self.add_count(word)
 
+    def add_word(self, word):
+        """Adds a new word to the dictionary when it does not already exist in our keys"""
+        if word not in self.keys():
+            self[word] = 0
+            self.types += 1
+                    
     def add_count(self, word, count=1):
         """Increase frequency count of given word by given count amount."""
-        # TODO: Increase word frequency by count
+        #for the sake of error correction, check if the word exists, else create it
+        if word not in self.keys():
+            self.add_word(word)
+        # √: Increase word frequency by count
+        self[word] += count
+        self.tokens += count
 
     def frequency(self, word):
         """Return frequency count of given word, or 0 if word is not found."""
-        # TODO: Retrieve word frequency count
-
+        # if checking a word that doesn't exist, return 0
+        if word not in self.keys():
+            return 0
+        # √: Retrieve word frequency count
+        return self[word]
 
 def print_histogram(word_list):
-    print('word list: {}'.format(word_list))
+    print(f'word list: {word_list}')
     # Create a dictogram and display its contents
     histogram = Dictogram(word_list)
     print('dictogram: {}'.format(histogram))
-    print('{} tokens, {} types'.format(histogram.tokens, histogram.types))
+    print(f'{histogram.tokens} tokens, {histogram.types} types')
     for word in word_list[-2:]:
         freq = histogram.frequency(word)
         print('{!r} occurs {} times'.format(word, freq))
     print()
-
 
 def main():
     import sys
