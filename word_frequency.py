@@ -10,7 +10,8 @@ import string
 def parseFile(document):
     """convert text file into a string of every word, removing all punctuation and converting to lower case"""
     #global parsed_text
-    f = open(os.path.join(sys.path[0],document)).read().split()
+    #f = open(os.path.join(sys.path[0],document)).read().split()
+    f = open(document).read().split()
 
     unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?'), None)    
     parsed_text = [line.translate(str.maketrans(unwanted_punctuation_table)).lower() for line in f]
