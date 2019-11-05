@@ -4,14 +4,21 @@
 {% block content %}
     </br></br>
     <div class="jumbotron">
-        <h3 class="display-6"> {{ npc_name }} </h3>
-        <p class="lead"> {{ msg }}
-        </p>
-        <hr class="my-4">  
         <p class="lead">
-        {% for word in wordlist %}
+            <h3>
+            {% for word in wordlist %}
             {{ word[0] }}
-        {% endfor %}
+            {% endfor %}
+            </h3>
         </p>
+        
+        <hr class="my-4">  
+
+        <form action= '/'>
+            <p>
+                <input type ="text" name="num" placeholder="# of words">
+                <button type = "Submit">Submit</button>
+            </p>
+        </form>
     </div>
 {% endblock %}

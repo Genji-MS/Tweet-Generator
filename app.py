@@ -19,7 +19,7 @@ def index():
 
     wordlist = []
     words = request.args.get('num')
-    num_words = 1 if (words != None and int(words)>1) else int(words)
+    num_words = int(words) if (words != None and words != "" and int(words)>1) else 1
 
     for x in range(num_words):
         rng_word = random_word_from_lists(randomgram)

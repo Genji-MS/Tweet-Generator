@@ -12,7 +12,7 @@ def parseFile(document):
     #global parsed_text
     f = open(os.path.join(sys.path[0],document)).read().split()
 
-    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?'), None)
+    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?'), None)    
     parsed_text = [line.translate(str.maketrans(unwanted_punctuation_table)).lower() for line in f]
     #print ( len(parsed_text))
     #wordcount(parsed_text)
