@@ -4,21 +4,33 @@
 {% block content %}
     </br></br>
     <div class="jumbotron">
-        <p class="lead">
-            <h3>
-            {% for word in wordlist %}
-            {{ word[0] }}
+        <span>
+            {% for word in f_wordlist %}
+                <{{ word[1] }}> {{ word[0] }} </{{ word[1] }}>
             {% endfor %}
-            </h3>
-        </p>
-        
-        <hr class="my-4">  
-
-        <form action= '/'>
-            <p>
-                <input type ="text" name="num" placeholder="# of words">
-                <button type = "Submit">Submit</button>
-            </p>
-        </form>
+        </span>        
+        <hr class="my-4">
+        <div class="row justify-content-md-center">
+            <div class="col-10 justify-content-md-center">
+                <form action= '/'>
+                    <input type ="text" name="num" placeholder="# of words">
+                    <button type = "Submit">Submit</button>
+                </form>
+            </div>
+            <div class="col-2">
+                    <a class="btn btn-primary" href="/favorite/{{ wordlist }}" role="button">Add to Favorites</a>
+            </div>
+        </div>
     </div>
+
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Favorites</th>
+            </tr>
+        </thead>
+        {% for fav in favorites %}
+            {% include 'partials/fav_item.html' %}
+        {% endfor %}
+    </table>
 {% endblock %}

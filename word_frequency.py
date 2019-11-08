@@ -1,7 +1,5 @@
 # word_frequency.py
-import os
-import sys
-import string
+import os, sys, string
 
 #parsed_text = []
 #histogram_words = []
@@ -13,12 +11,52 @@ def parseFile(document):
     #f = open(os.path.join(sys.path[0],document)).read().split()
     f = open(document).read().split()
 
-    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?'), None)    
+    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?:'), None)    
     parsed_text = [line.translate(str.maketrans(unwanted_punctuation_table)).lower() for line in f]
     #print ( len(parsed_text))
     #wordcount(parsed_text)
 
     return parsed_text
+
+def markov_dictionary(histogram):
+    markov_dict = {}
+    for index in range(len(histogram)-2):
+        word_1 = histogram[index]
+        word_2 = histogram[index+1]
+        if word_1 not in markov_dict.keys():
+            #new word with its own new list
+            markov_dict[word_1] = [ [word_2,1] ]
+            #new_list_item = [word_2,1]
+            #markov_dict[word_1].append(new_list_item)
+        else:
+            existing = False
+            for x in range(len( markov_dict[word_1] )):
+                if word_2 == markov_dict[word_1][x][0]:
+                    #increase frequency of existing word
+                    markov_dict[word_1][x][1] += 1
+                    existing = True
+                    break
+            if existing == False:
+                #add new word to list
+                new_list_item = [word_2, 1]
+                markov_dict[word_1].append(new_list_item)
+    return markov_dict
+
+def markov_max_freq(markov_dict):
+    max_freq = 0
+    for word_list in markov_dict.values():
+        #print(word_list)
+        for num in word_list:
+            if num[1] > max_freq:
+                max_freq = num[1]
+    return max_freq
+
+def wordcount_max_freq(histogram):
+    max_freq = 0
+    for word in histogram:
+        if word[1] > max_freq:
+            max_freq = word[1]
+    return max_freq
 
 def wordcount_list(histogram):
     """seperate into unique words and count them ALL up"""
@@ -101,8 +139,10 @@ def frequency(match_word,histogram):
 
 if __name__ == "__main__":
     histogram = parseFile('MonsterUnderTheBed')
+    markov_dict = markov_dictionary(histogram)
     print (f'total words: { len(histogram)}')
     print (f'total of unique words: {unique_words(histogram)}')
-    wordcount_dict(histogram)
-    wordcount_tup(histogram)
-    print (f'total occurances of the word "monster" :{frequency("monster",histogram)}')
+    print (markov_dict)
+    #wordcount_dict(histogram)
+    #wordcount_tup(histogram)
+    #print (f'total occurances of the word "monster" :{frequency("monster",histogram)}')
