@@ -5,27 +5,30 @@
         <meta charset="utf-8">
         <title>TweetGen</title>
         <!-- Latest compiled and minified CSS-->
-        <link rel='stylesheet' href='https://bootswatch.com/4/slate/bootstrap.min.css'>
+        <link rel='stylesheet' href='https://bootswatch.com/4/materia/bootstrap.min.css'>
     </head>
     <style>
             .jumbotron {
-                background: rgba(22, 23, 34, 0.6);
+                background: rgba(242, 243, 244, 0.9);
             }
             body { 
-                background: url({{ bg_image }}) no-repeat center center fixed; 
+                background: url(static/Legend_Labyrinth_Unicorn_cold.png) no-repeat center center fixed; 
                 background-size: auto 100%;
-                background-color: rgb(200,200,200);
+                background-color: rgb(212, 227, 227);
             }
             span {
-                font-size: 2em;
+                font-size: 1.5em;
                 display: inline-block;
             }
-            span a{ font-size: 75%; }
-            span b{ font-size: 100%; }
-            span c{ font-size: 120%; }
-            span d{ font-size: 145%; }
-            span e{ font-size: 170%; }
-            span f{ font-size: 200%; }            
+            tbody tr td{
+                class: "text-primary";
+            }
+            tbody tr{
+                opacity: .9;
+            }
+            table {
+                opacity: .7
+            }   
 
     </style>
     <body>

@@ -13,9 +13,19 @@ favorites = db.favorites
 
 app = Flask(__name__)
 
-parsed_text = parseFile('MonsterUnderTheBed')
+#parsed_text = parseFile('MonsterUnderTheBed')
+parsed_text = parseFile('Script_Labyrinth_clean') #blue
 histogram = wordcount_nestedlist(parsed_text)
-markov_dict = markov_dictionary(parsed_text)
+markov_dict = markov_dictionary(parsed_text, 'blue')
+max_freq_markov = markov_max_freq(markov_dict)
+
+parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
+markov_dict = markov_dictionary(parsed_text, 'pink', markov_dict)
+max_freq_markov = markov_max_freq(markov_dict)
+
+parsed_text = parseFile('Script_Legend_clean') #red
+markov_dict = markov_dictionary(parsed_text, 'red', markov_dict)
+
 parsed_text = None
 max_freq_word = wordcount_max_freq(histogram)
 max_freq_markov = markov_max_freq(markov_dict)
@@ -28,26 +38,41 @@ def index():
     #if randomgram == None:
     #    print ('running init')
     #    randomgram = init()
-    style = ['a','b','c','d','e','f']
+
+    #style = ['a','b','c','d','e','f']
     wordlist = []
-    f_wordlist = []
+    colored_wordlist = []
     words = request.args.get('num')
     num_words = int(words) if (words != None and words != "" and int(words)>1) else 1
     
     word = ""
+    color = ""
     for x in range(num_words):
         #print (f' x: {x} word:{word}')
         if x == 0:
             word = random_word_from_lists(histogram)
-            tag = math.floor( (word[1]/max_freq_word) * 5)
+            #tag = math.floor( (word[1]/max_freq_markov) * 5)
+            color = None
         else:
             word = random_markov_word(word, markov_dict)
-            tag = math.floor( (word[1]/max_freq_markov) * 5)
-        wordlist.append(word)
-        f_wordlist.append( [word[0],style[tag]] )
+            #tag = math.floor( (word[1]/max_freq_markov) * 5)
+            color = word[1]
+        if color == 'red':
+            color = "text-danger"
+        #elif color == 'blue':
+        #    color = "text-primary"
+        elif color == 'pink':
+            color = "text-info"
+        else:
+            #labyrinth blue
+            color = "text-primary"
+        if word[0] == '888': break
+        wordlist.append(word[0])
+        #f_wordlist.append( [word[0],style[tag]] )
+        colored_wordlist.append( [word[0], color])
         word = word[0]
 
-    return render_template('index.html', f_wordlist = f_wordlist, wordlist = wordlist, favorites = favorites.find() )
+    return render_template('index.html', f_wordlist = colored_wordlist, wordlist = wordlist, favorites = favorites.find() )
 
 @app.route('/favorite/<wordlist>', methods=['GET'])
 def add_favorite(wordlist):

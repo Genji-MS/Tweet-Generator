@@ -18,27 +18,28 @@ def parseFile(document):
 
     return parsed_text
 
-def markov_dictionary(histogram):
-    markov_dict = {}
+def markov_dictionary(histogram, color, markov_dict = {}):
     for index in range(len(histogram)-2):
         word_1 = histogram[index]
         word_2 = histogram[index+1]
         if word_1 not in markov_dict.keys():
             #new word with its own new list
-            markov_dict[word_1] = [ [word_2,1] ]
+            markov_dict[word_1] = [ [word_2,color,1] ]
             #new_list_item = [word_2,1]
             #markov_dict[word_1].append(new_list_item)
         else:
             existing = False
             for x in range(len( markov_dict[word_1] )):
                 if word_2 == markov_dict[word_1][x][0]:
-                    #increase frequency of existing word
-                    markov_dict[word_1][x][1] += 1
-                    existing = True
-                    break
+                    #color from the same text document
+                    if color == markov_dict[word_1][x][1]:
+                        #increase frequency of existing word
+                        markov_dict[word_1][x][2] += 1
+                        existing = True
+                        break
             if existing == False:
                 #add new word to list
-                new_list_item = [word_2, 1]
+                new_list_item = [word_2, color, 1]
                 markov_dict[word_1].append(new_list_item)
     return markov_dict
 
@@ -47,8 +48,8 @@ def markov_max_freq(markov_dict):
     for word_list in markov_dict.values():
         #print(word_list)
         for num in word_list:
-            if num[1] > max_freq:
-                max_freq = num[1]
+            if num[2] > max_freq:
+                max_freq = num[2]
     return max_freq
 
 def wordcount_max_freq(histogram):

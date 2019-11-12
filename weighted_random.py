@@ -82,24 +82,29 @@ def random_word_from_lists(histogram):
     #choice(histogram_words, p=weighted_rng)
 
 def random_markov_word(current_word, markov_dict):
-    next_word_list = markov_dict[current_word]
+    try:
+        next_word_list = markov_dict[current_word]
+    except:
+        return ["888", '', 0]
 
     total_words = 0
     for num in next_word_list:
-        total_words += num[1]
+        total_words += num[2]
 
     rng = randint(0,total_words-1)
     next_word = ""
+    color = ""
     freq = 0
     total = 0
     for word in next_word_list:
-        total += word[1]
+        total += word[2]
         if rng < total:
             next_word = word[0]
-            freq = word[1]
+            color = word[1]
+            freq = word[2]
             break
-    
-    return [next_word, freq]
+        
+    return [next_word, color, freq]
 
 def create_randomgram(word):
     global randomgram

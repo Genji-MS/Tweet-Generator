@@ -1,12 +1,12 @@
 <!-- TweetGen templates/victorycredit.html -->
 
 <tbody>
-    <tr class="table-dark">
+    <tr class="table-light opacity-60">
         <td>{{ fav.text }}</td>
         <td>
             <form method="POST" action="{{ fav._id }}/delete">
                 <input type = "hidden" name="_method" value="DELETE">
-                <button class = "btn btn-primary btn-sm">Del</button>
+                <button class="btn btn-outline-secondary btn-sm">Del</button>
             </form>
         </td>
     </tr>

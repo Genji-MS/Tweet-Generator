@@ -2,11 +2,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    </br></br>
+    <br/>First order Markov sentence generator with scripts from <span class="text-primary">Labyrinth</span>, <span class="text-danger">Legend</span>, and <span class="text-info">The Last Unicorn</span>
+    <br/>
     <div class="jumbotron">
         <span>
             {% for word in f_wordlist %}
-                <{{ word[1] }}> {{ word[0] }} </{{ word[1] }}>
+                <span class={{ word[1] }}> {{ word[0] }} </span>
             {% endfor %}
         </span>        
         <hr class="my-4">
@@ -18,12 +19,12 @@
                 </form>
             </div>
             <div class="col-2">
-                    <a class="btn btn-primary" href="/favorite/{{ wordlist }}" role="button">Add to Favorites</a>
+                    <a class="btn btn-secondary" href="/favorite/{{ wordlist }}" role="button">Add to Favorites</a>
             </div>
         </div>
     </div>
 
-    <table class="table table-hover">
+    <table class="table table-primary">
         <thead>
             <tr>
                 <th scope="col">Favorites</th>
