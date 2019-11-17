@@ -54,7 +54,7 @@ class LinkedList(object):
 
     def length(self):
         """Return the length of this linked list by traversing its nodes.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(n) Why and under what conditions?"""
         count = 0
         for item in self.items():
             count += 1
@@ -63,7 +63,7 @@ class LinkedList(object):
 
     def append(self, item):
         """Insert the given item at the tail of this linked list.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(1) Why and under what conditions?"""
         new_node = Node(item)
         if self.head == None:
             self.head = self.tail = new_node
@@ -75,7 +75,7 @@ class LinkedList(object):
 
     def prepend(self, item):
         """Insert the given item at the head of this linked list.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(1) Why and under what conditions?"""
         new_node = Node(item)
         if self.head == None:
             self.head = self.tail = new_node
@@ -87,8 +87,8 @@ class LinkedList(object):
 
     def find(self, quality):
         """Return an item from this linked list satisfying the given quality.
-        TODO: Best case running time: O(???) Why and under what conditions?
-        TODO: Worst case running time: O(???) Why and under what conditions?"""
+        √: Best case running time: O(n) Why and under what conditions?
+        √: Worst case running time: O(n^2) Why and under what conditions?"""
         if self.head != None:
             for item in self.items():
                 if quality(item) is True:
@@ -99,34 +99,32 @@ class LinkedList(object):
 
     def delete(self, item):
         """Delete the given item from this linked list, or raise ValueError.
-        TODO: Best case running time: O(???) Why and under what conditions?
-        TODO: Worst case running time: O(???) Why and under what conditions?"""
+        √: Best case running time: O(n) Why and under what conditions?
+        √: Worst case running time: O(n) Why and under what conditions?"""
         found = False
         prev_item = None
-        current_item = self.head        
-        while current_item is not None:
+        crnt_item = self.head        
+        while crnt_item is not None:
             #print (f'prev_:{prev_item} current_:{current_item} search_:{item}')
-            if current_item.data == item:
+            if crnt_item.data == item:
                 found = True
-                if self.head == current_item:
+                if self.head == crnt_item:
                     #move the value of our next item to the current head, if it exists
-                    if current_item.next != None:
-                        self.head = current_item.next
-                        break
+                    if crnt_item.next != None:
+                        self.head = crnt_item.next
                     else:
                         self.head = None
                         self.tail = None
-                        break
                 else:
                     #rerouting around the current item
-                    prev_item.next = current_item.next
-                    if self.tail == current_item:
+                    prev_item.next = crnt_item.next
+                    if self.tail == crnt_item:
                         self.tail = prev_item
-                    break
+                break
             else:
                 #remember the previous item, and seek the next one
-                prev_item = current_item
-                current_item = current_item.next
+                prev_item = crnt_item
+                crnt_item = crnt_item.next
         if found == False:
             raise ValueError('Item not found: {}'.format(item))
         
