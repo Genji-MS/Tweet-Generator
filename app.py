@@ -3,8 +3,8 @@ import os, math
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from weighted_random import random_word_from_lists, random_markov_word, wordcount_nestedlist
 from word_frequency import markov_dictionary, parseFile, markov_max_freq, wordcount_max_freq
+from weighted_random import random_word_from_lists, random_markov_word, wordcount_nestedlist
 
 host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/itemlist')
 client = MongoClient(host=f'{host}?retryWrites=false')
@@ -66,7 +66,7 @@ def index():
         else:
             #labyrinth blue
             color = "text-primary"
-        if word[0] == '888': break
+        if word[0] == '888': break #if random word doesn't return another connection, 888 is returned to end the chain prematurely
         wordlist.append(word[0])
         #f_wordlist.append( [word[0],style[tag]] )
         colored_wordlist.append( [word[0], color])

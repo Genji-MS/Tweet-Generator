@@ -19,6 +19,9 @@ def parseFile(document):
     return parsed_text
 
 def markov_dictionary(histogram, color, markov_dict = {}):
+    """build a markov chain by storing which words naturally follow other words and store them in a dictionary+list
+    Optionally providing colors for each script passed, and a markov_dictionary object to continue building upon"""
+    #'color' is converted into bootstrap color. It allows us to know which words in our markov chain come from which scripts
     for index in range(len(histogram)-2):
         word_1 = histogram[index]
         word_2 = histogram[index+1]
@@ -140,7 +143,7 @@ def frequency(match_word,histogram):
 
 if __name__ == "__main__":
     histogram = parseFile('MonsterUnderTheBed')
-    markov_dict = markov_dictionary(histogram)
+    markov_dict = markov_dictionary(histogram, None)
     print (f'total words: { len(histogram)}')
     print (f'total of unique words: {unique_words(histogram)}')
     print (markov_dict)
