@@ -8,6 +8,7 @@ class HashTable(object):
         """Initialize this hash table with the given initial size."""
         # Create a new list (used as fixed-size array) of empty linked lists
         self.buckets = [LinkedList() for _ in range(init_size)]
+        # Keep track of the number of initial buckets to prevent hard coding our hash EX. hash(key) % size
         self.size = init_size
 
     def __str__(self):
@@ -58,7 +59,8 @@ class HashTable(object):
 
     def length(self):
         """Return the number of key-value entries by traversing its buckets.
-        √: Running time: O(n^2) Why and under what conditions?"""
+        √: Running time: O(n^2) if each of the buckets and linkedlist had to itterate over its entire length. Currently O(n) because linkedlist is optomized by storing and returning its length counter. Ideally storing a parameter and adjusting its value based on add/delete operations could make this an O(1) operation"""
+        #STRETCH CHALLENGE: instead of counting each linkedlist item of buckets manually, we simply call the bucket.length function that is optomized by returning its stored length parameter
         count = 0
         for bucket in self.buckets:
             count += bucket.length()
@@ -77,7 +79,7 @@ class HashTable(object):
 
     def get(self, key):
         """Return the value associated with the given key, or raise KeyError.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(n) Why and under what conditions?"""
         index = hash(key) % self.size
         item = self.buckets[index].find(lambda item: item[0] == key)
         if item != None:
@@ -92,9 +94,10 @@ class HashTable(object):
 
     def set(self, key, value):
         """Insert or update the given key with its associated value.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(n) Why and under what conditions?"""
         index = hash(key) % self.size
         item = self.buckets[index].find(lambda item: item[0] == key)
+        #'Update value' done by deleting the current tuple if it already exists
         if item != None:
             self.buckets[index].delete(item)
         new_item = (key, value)
@@ -106,7 +109,7 @@ class HashTable(object):
 
     def delete(self, key):
         """Delete the given key from this hash table, or raise KeyError.
-        TODO: Running time: O(???) Why and under what conditions?"""
+        √: Running time: O(n^2) running .delete requires us to parse the length of the linked list an additional time"""
         index = hash(key) % self.size
         item = self.buckets[index].find(lambda item: item[0] == key)
         if item != None:
@@ -125,6 +128,7 @@ def test_hash_table():
     print('hash table: {}'.format(ht))
 
     print('\nTesting set:')
+    #inserted test ('X', 12) to see if overwriting a value works correctly 
     for key, value in [('I', 1), ('V', 5), ('X', 12), ('X', 10)]:
         print('set({!r}, {!r})'.format(key, value))
         ht.set(key, value)
@@ -138,7 +142,6 @@ def test_hash_table():
     print('contains({!r}): {}'.format('X', ht.contains('X')))
     print('length: {}'.format(ht.length()))
 
-    # Enable this after implementing delete method
     delete_implemented = True
     if delete_implemented:
         print('\nTesting delete:')
