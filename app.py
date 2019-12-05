@@ -22,10 +22,10 @@ parsed_text = parseFile('Script_Labyrinth_clean') #blue
 markov_2nd = markov_order_two_with_color(parsed_text, 'blue')
 starter_words = starter_words_color(parsed_text, 'blue')
 
-parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
+#parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
 # 1storder markov_dict = markov_dictionary(parsed_text, 'pink', markov_dict)
-markov_2nd = markov_order_two_with_color(parsed_text, 'pink', markov_2nd)
-starter_words = starter_words_color(parsed_text, 'pink', starter_words)
+#markov_2nd = markov_order_two_with_color(parsed_text, 'pink', markov_2nd)
+#starter_words = starter_words_color(parsed_text, 'pink', starter_words)
 
 #parsed_text = parseFile('Script_Legend_clean') #red
 # 1storder markov_dict = markov_dictionary(parsed_text, 'red', markov_dict)
