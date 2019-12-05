@@ -11,7 +11,8 @@ def parseFile(document):
     #f = open(os.path.join(sys.path[0],document)).read().split()
     f = open(document).read().split()
 
-    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?:'), None)    
+    #unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?:'), None)
+    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’_…:*'), None)
     parsed_text = [line.translate(str.maketrans(unwanted_punctuation_table)).lower() for line in f]
     #print ( len(parsed_text))
     #wordcount(parsed_text)
@@ -46,7 +47,55 @@ def markov_dictionary(histogram, color, markov_dict = {}):
                 markov_dict[word_1].append(new_list_item)
     return markov_dict
 
+def markov_order_two_with_color(parsed_text, color, markov_dict = {}):
+    for index in range(len(parsed_text)-3):
+        word_1 = parsed_text[index]
+        word_2 = parsed_text[index+1]
+        word_3 = parsed_text[index+2]
+        phrase1 = word_1+" "+word_2
+        phrase2 = word_2+" "+word_3
+        if phrase1 not in markov_dict.keys():
+            #new word with its own new list
+            markov_dict[phrase1] = [ [phrase2,color,1] ]
+            #new_list_item = [word_2,1]
+            #markov_dict[word_1].append(new_list_item)
+        else:
+            existing = False
+            for x in range(len( markov_dict[phrase1] )):
+                if phrase2 == markov_dict[phrase1][x][0]:
+                    #color from the same text document
+                    if color == markov_dict[phrase1][x][1]:
+                        #increase frequency of existing word
+                        markov_dict[phrase1][x][2] += 1
+                        existing = True
+                        break
+            if existing == False:
+                #add new word to list
+                new_list_item = [phrase2, color, 1]
+                markov_dict[phrase1].append(new_list_item)
+    return markov_dict
+
+def starter_words_color(parsed_text, color, starter_words = {}):
+    for index in range(len(parsed_text)-3):
+        hit = None
+        char = parsed_text[index][-1:]
+        if index == 0:
+            hit = parsed_text[index]+" "+parsed_text[index+1]
+        elif char == '.' or char == '!' or char == '?':
+            char = parsed_text[index+1][-1:]
+            if ((char == '.' or char == '!' or char == '?')== False):
+                hit = parsed_text[index+1]+" "+parsed_text[index+2]
+        
+        if hit != None:
+            if hit not in starter_words.keys():
+                starter_words[hit] = [ color, 1 ]
+            else:
+                starter_words[hit][1] += 1
+
+    return starter_words
+
 def markov_max_freq(markov_dict):
+    """ allows us to determine if the individual word selection was common or rare and adjust font size with the result """
     max_freq = 0
     for word_list in markov_dict.values():
         #print(word_list)
@@ -56,6 +105,7 @@ def markov_max_freq(markov_dict):
     return max_freq
 
 def wordcount_max_freq(histogram):
+    """ allows us to determine if the individual word selection was common or rare and adjust font size with the result """
     max_freq = 0
     for word in histogram:
         if word[1] > max_freq:

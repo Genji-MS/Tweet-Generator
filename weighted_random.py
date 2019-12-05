@@ -1,4 +1,4 @@
-from word_frequency import parseFile, markov_dictionary
+from word_frequency import parseFile, markov_dictionary, markov_order_two_with_color
 #from numpy.random import choice
 from random import randint
 
@@ -81,6 +81,28 @@ def random_word_from_lists(histogram):
     #return word
     #choice(histogram_words, p=weighted_rng)
 
+def random_starter_words(starter_words):
+    total_words = 0
+    for key in starter_words.keys():
+        #print(f"checking starter word: {key} and value: {starter_words[key]}")
+        total_words += starter_words[key][1]
+
+    rng = randint(0,total_words-1)
+    words = ""
+    color = ""
+    freq = 0
+    total = 0
+    for key in starter_words.keys():
+        total += starter_words[key][1]
+        if rng < total:
+            words = key
+            color = starter_words[key][0]
+            freq = starter_words[key][1]
+            break
+
+    #print (f' |{word}| freq: {freq} {rng}:{total_words} ')
+    return [words, color, freq]
+
 def random_markov_word(current_word, markov_dict):
     try:
         next_word_list = markov_dict[current_word]
@@ -105,6 +127,32 @@ def random_markov_word(current_word, markov_dict):
             break
         
     return [next_word, color, freq]
+
+def random_markov_order_two_word(current_phrase, markov_order_two_dict):
+    try:
+        next_word_list = markov_order_two_dict[current_phrase]
+    except:
+        return ["888", '', 0]
+
+    #print (next_word_list)
+    total_words = 0
+    for num in next_word_list:
+        total_words += num[2]
+
+    rng = randint(0,total_words-1)
+    next_phrase = ""
+    color = ""
+    freq = 0
+    total = 0
+    for word in next_word_list:
+        total += word[2]
+        if rng < total:
+            next_phrase = word[0]
+            color = word[1]
+            freq = word[2]
+            break
+        
+    return [next_phrase, color, freq]
 
 def create_randomgram(word):
     global randomgram
