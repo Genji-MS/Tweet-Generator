@@ -27,10 +27,10 @@ parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
 markov_2nd = markov_order_two_with_color(parsed_text, 'pink', markov_2nd)
 starter_words = starter_words_color(parsed_text, 'pink', starter_words)
 
-parsed_text = parseFile('Script_Legend_clean') #red
+#parsed_text = parseFile('Script_Legend_clean') #red
 # 1storder markov_dict = markov_dictionary(parsed_text, 'red', markov_dict)
-markov_2nd = markov_order_two_with_color(parsed_text, 'red', markov_2nd)
-starter_words = starter_words_color(parsed_text, 'red', starter_words)
+#markov_2nd = markov_order_two_with_color(parsed_text, 'red', markov_2nd)
+#starter_words = starter_words_color(parsed_text, 'red', starter_words)
 
 
 parsed_text = None
