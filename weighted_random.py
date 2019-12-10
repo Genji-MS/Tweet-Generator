@@ -1,4 +1,4 @@
-from word_frequency import parseFile, markov_dictionary, markov_order_two_with_color
+from word_frequency import parseFile, markov_dictionary
 #from numpy.random import choice
 from random import randint
 
@@ -138,6 +138,35 @@ def random_markov_order_two_word(current_phrase, markov_order_two_dict):
     total_words = 0
     for num in next_word_list:
         total_words += num[2]
+
+    rng = randint(0,total_words-1)
+    next_phrase = ""
+    color = ""
+    freq = 0
+    total = 0
+    for word in next_word_list:
+        total += word[2]
+        if rng < total:
+            next_phrase = word[0]
+            color = word[1]
+            freq = word[2]
+            break
+        
+    return [next_phrase, color, freq]
+
+def random_markov_two_with_STOP(current_phrase, markov_order_two_dict, look_for_STOP):
+    try:
+        next_word_list = markov_order_two_dict[current_phrase]
+    except: #Ends the sentence if we run into a phrase that has no following words
+        return ["888 888", '', 0]
+
+    #print (next_word_list)
+    total_words = 0
+    for num in next_word_list:
+        total_words += num[2]
+        if look_for_STOP:#We want to end at the next natural stopping point
+            if num[0].split(" ")[1] == "STOP":
+                return ["STOP STOP", '', 0]
 
     rng = randint(0,total_words-1)
     next_phrase = ""

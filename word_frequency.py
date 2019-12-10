@@ -12,7 +12,7 @@ def parseFile(document):
     f = open(document).read().split()
 
     #unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’,.…!?:'), None)
-    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’_…:*'), None)
+    unwanted_punctuation_table = dict.fromkeys(map(ord, '\n\r“”"‘’_…:*[]()'), None)
     parsed_text = [line.translate(str.maketrans(unwanted_punctuation_table)).lower() for line in f]
     #print ( len(parsed_text))
     #wordcount(parsed_text)
@@ -93,6 +93,78 @@ def starter_words_color(parsed_text, color, starter_words = {}):
                 starter_words[hit][1] += 1
 
     return starter_words
+
+def markov_order_two_with_tokens(parsed_text, color, markov_dict = {"START START":[]}):
+    for index in range(len(parsed_text)-3):
+        word_1 = parsed_text[index]
+        word_2 = parsed_text[index+1]
+        word_3 = parsed_text[index+2]
+        phrase1 = word_1+" "+word_2
+        phrase2 = word_2+" "+word_3
+        token_STOP = None
+        token_START = None
+
+        char1 = word_1[-1:]
+        char2 = word_2[-1:]
+        #Tokens, check for natural ending characters '.' and put them into a special 'START' 'STOP' entry
+        if index == 0:
+            token_START = parsed_text[index]+" "+parsed_text[index+1]
+        elif char1 == '.' or char1 == '!' or char1 == '?':
+            #Create our ending token
+            #Additionaly check if the following word is a valid starter
+            if ((char2 == '.' or char2 == '!' or char2 == '?')== False):
+                token_START = parsed_text[index+1]+" "+parsed_text[index+2]
+        if char2 == '.' or char2 == '!' or char2 == '?':
+            token_STOP = word_2+" STOP"
+
+        #Append our starter token into it's entry
+        #Store our phrase into 'START START'. We will take the current token_START word and the one that naturally follows
+        #This is to avoid bloating the dictionary with 'START+word' entries and instead start the markov with a two-word phrase
+        if token_START != None:
+            hit = False
+            for x in range(len( markov_dict["START START"] )):
+                if token_START == markov_dict["START START"][x][0]:
+                    markov_dict["START START"][x][2] += 1
+                    hit = True
+                    break
+            if hit == False:
+                new_starter = [token_START, color, 1]
+                markov_dict["START START"].append(new_starter)
+        
+        #continue with searching and adding our normal token to the markov chain
+        if phrase1 not in markov_dict.keys():
+            #new word with its own new list
+            markov_dict[phrase1] = [ [phrase2,color,1] ]
+        else:
+            existing = False
+            for x in range(len( markov_dict[phrase1] )):
+                if phrase2 == markov_dict[phrase1][x][0]:
+                    #color from the same text document
+                    if color == markov_dict[phrase1][x][1]:
+                        #increase frequency of existing word
+                        markov_dict[phrase1][x][2] += 1
+                        existing = True
+                        break
+            if existing == False:
+                #add new word to list
+                new_list_item = [phrase2, color, 1]
+                markov_dict[phrase1].append(new_list_item)
+        
+        #Because our end token, which is part of the current 'phrase1', may have not been inserted into the markov chain, we add it now
+        if token_STOP != None:
+            hit = False
+            for x in range(len( markov_dict[phrase1] )):
+                if token_STOP == markov_dict[phrase1][x][0]:
+                    #markov_dict[phrase1][x][2] += 1
+                    hit = True
+                    break
+            if hit == False:
+                new_stopper = [token_STOP, color, 0] #it has zero frequency of being selected randomly
+                markov_dict[phrase1].append(new_stopper)
+
+        
+
+    return markov_dict
 
 def markov_max_freq(markov_dict):
     """ allows us to determine if the individual word selection was common or rare and adjust font size with the result """

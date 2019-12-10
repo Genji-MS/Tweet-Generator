@@ -3,8 +3,8 @@ import os, math
 from flask import Flask, render_template, request, redirect, url_for
 from pymongo import MongoClient
 from bson.objectid import ObjectId
-from word_frequency import markov_dictionary, parseFile, markov_max_freq, wordcount_max_freq, markov_order_two_with_color, starter_words_color
-from weighted_random import random_word_from_lists, random_markov_word, random_markov_order_two_word, random_starter_words #wordcount_nestedlist
+from word_frequency import markov_dictionary, parseFile, markov_max_freq, wordcount_max_freq, markov_order_two_with_tokens
+from weighted_random import random_word_from_lists, random_markov_word, random_markov_order_two_word, random_markov_two_with_STOP #wordcount_nestedlist
 
 host = os.environ.get('MONGODB_URI', 'mongodb://localhost:27017/itemlist')
 client = MongoClient(host=f'{host}?retryWrites=false')
@@ -19,24 +19,20 @@ app = Flask(__name__)
 #histogram = wordcount_nestedlist(parsed_text)
 parsed_text = parseFile('Script_Labyrinth_clean') #blue
 # 1storder markov_dict = markov_dictionary(parsed_text, 'blue')
-markov_2nd = markov_order_two_with_color(parsed_text, 'blue')
-starter_words = starter_words_color(parsed_text, 'blue')
+markov_2nd = markov_order_two_with_tokens(parsed_text, 'blue')
 
-#parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
+parsed_text = parseFile('Script_LastUnicorn_clean') #pink/light purple
 # 1storder markov_dict = markov_dictionary(parsed_text, 'pink', markov_dict)
-#markov_2nd = markov_order_two_with_color(parsed_text, 'pink', markov_2nd)
-#starter_words = starter_words_color(parsed_text, 'pink', starter_words)
+markov_2nd = markov_order_two_with_tokens(parsed_text, 'pink', markov_2nd)
 
-#parsed_text = parseFile('Script_Legend_clean') #red
+parsed_text = parseFile('Script_Legend_clean') #red
 # 1storder markov_dict = markov_dictionary(parsed_text, 'red', markov_dict)
-#markov_2nd = markov_order_two_with_color(parsed_text, 'red', markov_2nd)
-#starter_words = starter_words_color(parsed_text, 'red', starter_words)
-
+markov_2nd = markov_order_two_with_tokens(parsed_text, 'red', markov_2nd)
 
 parsed_text = None
 # 1storder max_freq_word = wordcount_max_freq(histogram)
 # 1storder max_freq_markov = markov_max_freq(markov_dict)
-max_freq_markov = markov_max_freq(markov_2nd)
+#max_freq_markov = markov_max_freq(markov_2nd)
 
 @app.route('/')
 def index():
@@ -52,42 +48,56 @@ def index():
     colored_wordlist = []
     words = request.args.get('num')
     num_words = int(words) if (words != None and words != "" and int(words)>8) else 8
-    
+    used_words = 0
+    look_for_STOP = False
+    end = False
+
+    data = None #instantiated here for visibility outside of the ifs:
     phrase = ""
     color = ""
-    for x in range(num_words):
+    #for x in range(num_words):
+    while end is False:
+        if used_words == num_words:
+            look_for_STOP = True
         #print (f' x: {x} word:{word}')
-        if x == 0:
-            data = random_starter_words(starter_words)
+        #Generate word based on starting position
+        if used_words == 0:
+            data = random_markov_order_two_word("START START", markov_2nd)
             # 1storder word = random_word_from_lists(histogram)
             #tag = math.floor( (word[1]/max_freq_markov) * 5)
-            phrase = word = data[0]
+            #phrase = word = data[0]
+            word = data[0] #grab both words
             color = data[1]
-            #print (f"first phrase: {data}")
+            used_words += 1 #add one ADDITIONAL here, as we add one each cycle 
         else:
-            data = random_markov_order_two_word(phrase, markov_2nd)
+            data = random_markov_two_with_STOP(phrase, markov_2nd, look_for_STOP)
             #tag = math.floor( (word[1]/max_freq_markov) * 5)
-            phrase = data[0]
-            if phrase != '888':
-                #print (f"test phrase output: {phrase}")
-                word = phrase.split(" ")[1]
-            else:
-                word = phrase
+            #phrase = data[0]
+            word = data[0].split(" ")[1]
             color = data[1]
+        
+        phrase = data[0] #store our phrase to be used in the next loop
+        used_words += 1
+
         if color == 'red':
             color = "text-danger"
-        #elif color == 'blue':
-        #    color = "text-primary"
+        elif color == 'blue':
+            color = "text-primary"
         elif color == 'pink':
             color = "text-info"
         else:
-            #labyrinth blue
-            color = "text-primary"
-        if word == '888': break #if random word doesn't return another connection, 888 is returned to end the chain prematurely
-        wordlist.append(word)
-        #print (wordlist)
-        #f_wordlist.append( [word[0],style[tag]] )
-        colored_wordlist.append( [word, color])
+            color = ""
+        
+        if word == '888' or word == 'STOP':
+            end = True
+            break #if random word doesn't return another connection, 888 is returned to end the chain prematurely
+        else:
+            wordlist.append(word)
+            #f_wordlist.append( [word[0],style[tag]] )
+            colored_wordlist.append( [word, color])
+
+        #print (f'\nwordlist length = {used_words} looking for stop = {look_for_STOP} end = {end}')
+        #print (f' phrase = {phrase}, \n "{wordlist}"')
 
     return render_template('index.html', f_wordlist = colored_wordlist, wordlist = wordlist, favorites = favorites.find() )
 
